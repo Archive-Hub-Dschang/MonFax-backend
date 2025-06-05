@@ -1,19 +1,14 @@
 package com.LDE.monFax_backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
-
+import java.util.ArrayList;
+import java.util.List;
     @Data
-    @Builder
-    @AllArgsConstructor
     @Entity
     public class Correction {
         @Id
@@ -21,8 +16,18 @@ import java.time.LocalDate;
         private Long id;
 
         private Double price;
+
         private String resourceUrl;
 
-        @CreatedDate
-        private LocalDate createdAt;
+
+        @OneToOne
+        @JoinColumn(name = "exam_id", referencedColumnName = "id")
+        private Exam exam;
+
+    @OneToMany(mappedBy = "correction", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments = new ArrayList<>();
+
+
+
+
     }

@@ -1,11 +1,11 @@
 package com.LDE.monFax_backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +14,13 @@ public class Semester {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private String label;
-    private String programId;
-    private String levelId;
+    private String name;
+    private Double price;
+
+    @ManyToOne
+    @JoinColumn(name = "program_id")
+    private Program program;
+
+    @OneToMany(mappedBy = "semester", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Subject> subjects = new ArrayList<>();
 }

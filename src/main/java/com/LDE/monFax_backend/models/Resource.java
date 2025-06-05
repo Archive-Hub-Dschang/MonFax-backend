@@ -1,17 +1,18 @@
 package com.LDE.monFax_backend.models;
 
-import com.LDE.monFax_backend.enumerations.ResourceType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDate;
 
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Resource {
     @Id
@@ -20,13 +21,14 @@ public class Resource {
 
     private String resourceUrl;
 
+    private String title;
+
     private Long size;
-
-    private  Long uploadableId;
-
-    private ResourceType uploadableType;
 
     private Long numberOfDownload;
 
     private Long numberOfView;
+
+    @CreatedDate
+    private LocalDate createdAt;
 }

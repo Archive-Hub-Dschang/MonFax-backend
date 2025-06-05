@@ -4,7 +4,9 @@ import com.LDE.monFax_backend.enumerations.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -22,4 +24,8 @@ public class User {
     private String password;
 
     private UserType role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments = new ArrayList<>();
+
 }
