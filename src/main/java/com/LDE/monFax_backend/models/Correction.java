@@ -1,6 +1,5 @@
 package com.LDE.monFax_backend.models;
 
-import com.LDE.monFax_backend.enumerations.HasCorrectionType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,10 +19,9 @@ import java.time.LocalDate;
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
-        private Long hasCorrectionId;
-        private HasCorrectionType hasCorrectionType  ;
+
         private Double price;
-        private String pdfUrl;
+        private String resourceUrl;
 
         @CreatedDate
         private LocalDate createdAt;

@@ -13,7 +13,7 @@ import org.springframework.data.annotation.Id;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private long id;
     private String name;
     private String semesterId;
 }

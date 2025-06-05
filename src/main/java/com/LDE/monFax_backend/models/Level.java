@@ -13,6 +13,6 @@ import org.springframework.data.annotation.Id;
 public class Level {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
-    private String label;
+    private long id;
+    private String name;
 }

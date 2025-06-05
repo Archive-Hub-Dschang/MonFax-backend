@@ -13,6 +13,6 @@ import org.springframework.data.annotation.Id;
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private long id;
     private String name;
 }

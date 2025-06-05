@@ -25,9 +25,6 @@ public class Exam {
     private ExamType type;
 
     private int year;
-
-    private String pdfUrl;
-
     @CreatedDate
     private LocalDate createdAt;
 }

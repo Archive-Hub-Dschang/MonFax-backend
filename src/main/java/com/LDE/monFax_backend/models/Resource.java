@@ -18,7 +18,7 @@ public class Resource {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String pdfUrl;
+    private String resourceUrl;
 
     private Long size;
 
