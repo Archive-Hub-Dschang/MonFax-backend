@@ -1,0 +1,19 @@
+package com.LDE.monFax_backend.models;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+
+@Entity
+@Data
+@AllArgsConstructor
+public class Program {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
+    private String name;
+    private String departmentId;
+}
