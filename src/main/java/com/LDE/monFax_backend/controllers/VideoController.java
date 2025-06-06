@@ -72,4 +72,8 @@ public class VideoController {
             return ResponseEntity.badRequest().body("Erreur lors de la mise à jour : " + e.getMessage());
         }
     }
+    @GetMapping("/count")
+    public ResponseEntity<Long> getSubjectCount() {
+        return ResponseEntity.ok(videoService.getTotalVideo());
+    }
 }

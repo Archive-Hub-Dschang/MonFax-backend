@@ -78,5 +78,8 @@ public class LectureCourseService {
 
         return lectureCourseRepository.save(lectureCourse);
     }
+    public long getTotalCourses() {
+        return lectureCourseRepository.count();
+    }
 
 }

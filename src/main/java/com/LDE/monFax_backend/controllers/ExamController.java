@@ -1,6 +1,7 @@
 package com.LDE.monFax_backend.controllers;
 
 
+import com.LDE.monFax_backend.enumerations.ExamType;
 import com.LDE.monFax_backend.models.Exam;
 import com.LDE.monFax_backend.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -98,5 +99,15 @@ public class ExamController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/count")
+    public ResponseEntity<Long> getExamsCount() {
+        return ResponseEntity.ok(examService.getTotalExams());
+    }
+
+    @GetMapping("/count-by-type/{type}")
+    public ResponseEntity<Long> getExamsCountByType(@PathVariable ExamType type) {
+        return ResponseEntity.ok(examService.getExamsCountByType(type));
+    }
+
 
 }

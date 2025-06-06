@@ -98,4 +98,9 @@ public class LectureCourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalCourses() {
+        return ResponseEntity.ok(courseService.getTotalCourses());
+    }
 }
