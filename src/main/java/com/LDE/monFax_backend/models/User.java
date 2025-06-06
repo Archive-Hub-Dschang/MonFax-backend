@@ -23,6 +23,7 @@ public class User {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private UserType role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
