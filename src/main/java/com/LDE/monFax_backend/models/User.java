@@ -4,8 +4,6 @@ import com.LDE.monFax_backend.enumerations.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @Entity(name = "users")
@@ -22,4 +20,11 @@ public class User {
     private String password;
 
     private UserType role;
+
+     @Column(name = "last_login")
+    private java.time.LocalDateTime lastLogin;
+
+    public java.time.LocalDateTime getLastLogin() { return lastLogin; }
+
+    public void setLastLogin(java.time.LocalDateTime lastLogin) { this.lastLogin = lastLogin; }
 }
