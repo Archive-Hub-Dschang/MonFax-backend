@@ -1,20 +1,23 @@
 package com.LDE.monFax_backend.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Video {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Video extends Resource{
 
     private String description;
 
     private Double duration;
+
     private Double price;
 
     @ManyToOne

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Resource {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

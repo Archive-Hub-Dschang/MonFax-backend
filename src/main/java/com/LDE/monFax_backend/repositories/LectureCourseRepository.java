@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LectureCourseRepository  extends JpaRepository<LectureCourse,Long> {
+    long count();
 }

@@ -4,16 +4,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-    @Data
     @Entity
-    public class Correction {
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private Long id;
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Correction extends Resource{
 
         private Double price;
 
@@ -24,8 +23,8 @@ import java.util.List;
         @JoinColumn(name = "exam_id", referencedColumnName = "id")
         private Exam exam;
 
-    @OneToMany(mappedBy = "correction", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Payment> payments = new ArrayList<>();
+        @OneToMany(mappedBy = "correction", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Payment> payments = new ArrayList<>();
 
 
 
