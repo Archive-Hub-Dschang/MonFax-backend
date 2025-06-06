@@ -88,6 +88,7 @@ public class ResourceService {
         Files.deleteIfExists(path);
     }
 
-
-
+    public void increaseNumberOfViews(Resource resource){
+        resource.setNumberOfView(resource.getNumberOfView() + 1);
+    }
 }

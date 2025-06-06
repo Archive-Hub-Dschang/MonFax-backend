@@ -30,7 +30,12 @@ public class VideoService {
     }
 
     public Optional<Video> getVideoById(Long id) {
-        return videoRepository.findById(id);
+        Optional<Video> video =  videoRepository.findById(id);
+        video.ifPresent(foundVideo -> {
+            resourceService.increaseNumberOfViews(foundVideo);
+            videoRepository.save(foundVideo);
+        });
+        return video;
     }
 
     public Video createVideo(String title, String description, Double duration, Double price, Long subjectId, MultipartFile file) throws IOException {
