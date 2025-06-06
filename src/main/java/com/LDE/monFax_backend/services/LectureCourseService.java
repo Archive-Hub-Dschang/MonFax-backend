@@ -28,7 +28,12 @@ public class LectureCourseService {
     }
 
     public Optional<LectureCourse> getCourseById(Long id) {
-        return lectureCourseRepository.findById(id);
+        Optional<LectureCourse> course =  lectureCourseRepository.findById(id);
+        course.ifPresent(foundCourse -> {
+            resourceService.increaseNumberOfViews(foundCourse);
+            lectureCourseRepository.save(foundCourse);
+        });
+        return course;
     }
 
     public LectureCourse createCourse(String title, String description, Double price, Long subjectId, MultipartFile file) throws IOException {

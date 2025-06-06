@@ -3,6 +3,7 @@ package com.LDE.monFax_backend.services;
 
 import com.LDE.monFax_backend.models.Correction;
 import com.LDE.monFax_backend.models.Exam;
+import com.LDE.monFax_backend.models.Resource;
 import com.LDE.monFax_backend.repositories.CorrectionRepository;
 import com.LDE.monFax_backend.repositories.ExamRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,12 @@ public class CorrectionService {
     }
 
     public Optional<Correction> getCorrectionById(Long id) {
-        return correctionRepository.findById(id);
+        Optional<Correction> correction =  correctionRepository.findById(id);
+        correction.ifPresent(foundCorrection-> {
+            resourceService.increaseNumberOfViews(foundCorrection);
+            correctionRepository.save(foundCorrection);
+        });
+        return correction;
     }
 
     public Correction createCorrection(String title, Double price, Long examId, MultipartFile file) throws IOException {

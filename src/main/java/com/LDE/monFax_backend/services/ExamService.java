@@ -27,7 +27,12 @@ public class ExamService {
     }
 
     public Optional<Exam> getExamById(Long id) {
-        return examRepository.findById(id);
+        Optional<Exam> exam =  examRepository.findById(id);
+        exam.ifPresent(foundExam -> {
+            resourceService.increaseNumberOfViews(foundExam);
+            examRepository.save(foundExam);
+        });
+        return exam;
     }
 
     public Exam createExam(String title, String type, int year, Long subjectId, MultipartFile file) throws IOException {
