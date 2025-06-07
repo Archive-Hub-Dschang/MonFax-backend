@@ -131,4 +131,8 @@ public class CorrectionController {
         }
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> getSubjectCount() {
+        return ResponseEntity.ok(correctionService.getTotalCorrections());
+    }
 }

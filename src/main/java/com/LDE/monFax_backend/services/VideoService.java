@@ -99,5 +99,8 @@ public class VideoService {
 
         videoRepository.save(video);
     }
+    public long getTotalVideo() {
+        return videoRepository.count();
+    }
     }
 

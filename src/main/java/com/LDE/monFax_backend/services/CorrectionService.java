@@ -108,5 +108,8 @@ public class CorrectionService {
 
         return correctionRepository.save(existingCorrection);
     }
+    public long getTotalCorrections() {
+        return correctionRepository.count();
+    }
 
 }

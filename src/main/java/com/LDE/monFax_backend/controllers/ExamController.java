@@ -123,5 +123,15 @@ public class ExamController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/count")
+    public ResponseEntity<Long> getExamsCount() {
+        return ResponseEntity.ok(examService.getTotalExams());
+    }
+
+    @GetMapping("/count-by-type/{type}")
+    public ResponseEntity<Long> getExamsCountByType(@PathVariable ExamType type) {
+        return ResponseEntity.ok(examService.getExamsCountByType(type));
+    }
+
 
 }

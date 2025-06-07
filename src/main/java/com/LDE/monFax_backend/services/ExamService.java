@@ -105,6 +105,14 @@ public class ExamService {
 
         return examRepository.save(existingExam);
     }
+    public long getTotalExams() {
+        return examRepository.count();
+    }
+    public long getExamsCountByType(ExamType type) {
+        return examRepository.countByType(type);
+    }
+
+
 
     public List<Exam> getExamsBySubjectId(Long subjectId) {
         return examRepository.findBySubjectId(subjectId);

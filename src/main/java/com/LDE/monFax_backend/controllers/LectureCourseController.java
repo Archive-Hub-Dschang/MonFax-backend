@@ -98,4 +98,9 @@ public class LectureCourseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalCourses() {
+        return ResponseEntity.ok(courseService.getTotalCourses());
+    }
 }
