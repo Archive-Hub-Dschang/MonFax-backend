@@ -49,6 +49,7 @@ public class LectureCourseService {
         course.setPrice(price);
         course.setSubject(subject);
         course.setResourceUrl(fileUrl);
+        course.setSize(file.getSize());
         course.setCreatedAt(LocalDate.now());
         course.setNumberOfDownload(0L);
         course.setNumberOfView(0L);
