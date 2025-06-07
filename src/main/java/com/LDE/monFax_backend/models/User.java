@@ -1,6 +1,7 @@
 package com.LDE.monFax_backend.models;
 
 import com.LDE.monFax_backend.enumerations.UserType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class User {
     private UserType role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Payment> payments = new ArrayList<>();
 
 }

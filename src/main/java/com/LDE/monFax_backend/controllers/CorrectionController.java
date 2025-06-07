@@ -95,12 +95,13 @@ public class CorrectionController {
     public ResponseEntity<Correction> updateCorrection(
             @Parameter(description = "ID de la correction à mettre à jour", required = true)
             @PathVariable Long id,
-            @Parameter(description = "Données de la correction à mettre à jour", required = true)
-            @RequestPart("correction") Correction correction,
+            @RequestParam("title") String title,
+            @Parameter(description = "Prix de la correction")
+            @RequestParam("price") Double price,
             @Parameter(description = "Fichier corrigé à uploader", required = false)
             @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
-            Correction updated = correctionService.updateCorrection(id, correction, file);
+            Correction updated = correctionService.updateCorrection(id, title,price, file);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -115,16 +116,19 @@ public class CorrectionController {
                     @ApiResponse(responseCode = "404", description = "Correction non trouvée")
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCorrection(
+    public ResponseEntity<String> deleteCorrection(
             @Parameter(description = "ID de la correction à supprimer", required = true)
             @PathVariable Long id) {
         try {
-            correctionService.deleteCorrection(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            String message = correctionService.deleteCorrection(id);
+            if (message.startsWith("Erreur")) {
+                // Si le message contient "Erreur", on renvoie un bad request ou not found
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+            }
+            return ResponseEntity.ok(message);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur serveur : " + e.getMessage());
         }
     }
+
 }

@@ -3,7 +3,6 @@ package com.LDE.monFax_backend.services;
 
 import com.LDE.monFax_backend.models.Correction;
 import com.LDE.monFax_backend.models.Exam;
-import com.LDE.monFax_backend.models.Resource;
 import com.LDE.monFax_backend.repositories.CorrectionRepository;
 import com.LDE.monFax_backend.repositories.ExamRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,31 +56,53 @@ public class CorrectionService {
         return correctionRepository.save(correction);
     }
 
-    public void deleteCorrection(Long id) {
-        correctionRepository.deleteById(id);
+    public String deleteCorrection(Long id) {
+        try {
+            boolean exists = correctionRepository.existsById(id);
+            if (!exists) {
+                return "Erreur : La correction avec l'id " + id + " n'existe pas.";
+            }
+            Correction correction = correctionRepository.findById(id).orElseThrow();
+
+            // Rompre la relation avec l'exam
+            Exam exam = correction.getExam();
+            if (exam != null) {
+                exam.setCorrection(null);  // enlève la référence à la correction
+                examRepository.save(exam);  // sauvegarde la mise à jour
+            }
+
+            correctionRepository.deleteById(id);
+
+        } catch (Exception e) {
+            return "Erreur lors de la suppression de la correction : " + e.getMessage();
+        }
+        return "suppression reussie!";
     }
 
-    public Correction updateCorrection(Long id, Correction updatedCorrection, MultipartFile newFile) throws IOException {
+
+    public Correction updateCorrection(Long id, String title,Double price, MultipartFile file) throws IOException {
         Correction existingCorrection = correctionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Correction not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("Correction avec l'id  " + id + "introuvable"));
 
-        // Mettre à jour le prix
-        existingCorrection.setPrice(updatedCorrection.getPrice());
-
-        // Mettre à jour l'exam si besoin (optionnel, selon logique métier)
-        existingCorrection.setExam(updatedCorrection.getExam());
-
+        if (title != null)  existingCorrection.setTitle(title);
+        if (price != null) existingCorrection.setPrice(price);
+        
         // Si un nouveau fichier est uploadé, on remplace l'ancien fichier
-        if (newFile != null && !newFile.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             // Supprimer ancien fichier
             if (existingCorrection.getResourceUrl() != null) {
                 resourceService.deleteFile(existingCorrection.getResourceUrl());
             }
 
             // Enregistrer nouveau fichier
-            String newResourceUrl = resourceService.storeFile(newFile, "corrections");
+            String originalFilename = (file.getOriginalFilename());
+            String ext = resourceService.getExtension(originalFilename);
+            if (!ext.equals("pdf") && !ext.equals("docx") ) {
+                throw new IOException("format de fichier invalide ");
+            }
+            String newResourceUrl = resourceService.storeFile(file, "corrections");
             existingCorrection.setResourceUrl(newResourceUrl);
-            existingCorrection.setSize(newFile.getSize());
+            existingCorrection.setSize(file.getSize());
         }
 
         return correctionRepository.save(existingCorrection);

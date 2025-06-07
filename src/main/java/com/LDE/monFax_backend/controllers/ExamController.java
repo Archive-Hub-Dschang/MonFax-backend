@@ -1,9 +1,12 @@
 package com.LDE.monFax_backend.controllers;
 
 
+import com.LDE.monFax_backend.enumerations.ExamType;
 import com.LDE.monFax_backend.models.Exam;
+import com.LDE.monFax_backend.models.LectureCourse;
 import com.LDE.monFax_backend.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,10 +48,10 @@ public class ExamController {
             summary = "Récupérer une epreuve par ID",
             description = "Retourne une epreuve  correspondant à l'ID fourni",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Epreuve trouvée",
+                    @ApiResponse(responseCode = "200", description = "Examen trouvé",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = Exam.class))),
-                    @ApiResponse(responseCode = "404", description = "Epreuve  non trouvée")
+                    @ApiResponse(responseCode = "404", description = "Epreuve  non trouvé")
             })
     public ResponseEntity<Exam> getExamById(@PathVariable Long id) {
         return examService.getExamById(id)
@@ -57,14 +60,6 @@ public class ExamController {
     }
 
     @PostMapping
-    @Operation(
-            summary = "Créer une nouvelle epreuve",
-            description = "Crée une epreuve avec un fichier uploadé (pdf ou docx)",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "epreuve créé avec succès"),
-                    @ApiResponse(responseCode = "400", description = "Requête invalide (erreur lors de la création)")
-            }
-    )
     public ResponseEntity<String> createExam(
             @RequestParam("title") String title,
             @RequestParam("type") String type,
@@ -80,20 +75,50 @@ public class ExamController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExam(@PathVariable Long id) {
-        examService.deleteExam(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteExam(@PathVariable Long id) {
+
+        try{
+            examService.deleteExam(id);
+            return ResponseEntity.ok("creation de l'epreuve effectuée avec success");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
+    @GetMapping("/subject/{subjectId}")
+    @Operation(
+            summary = "Lister les examens d'une matière",
+            description = "Récupère tous les examens associés à un identifiant de matière",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Liste des examens récupérée",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = Exam.class))),
+                    @ApiResponse(responseCode = "404", description = "Aucun examen trouvé pour cette matière")
+            }
+    )
+    public ResponseEntity<List<Exam>> getExamsBySubjectId(@PathVariable Long subjectId) {
+        List<Exam> exams = examService.getExamsBySubjectId(subjectId);
+        if (exams.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(exams);
+    }
 
+    @Operation(summary = "Met à jour une epreuve", description = "Met à jour une epreuve avec possibilité de changer le fichier")
+    @ApiResponse(responseCode = "200", description = "epreuve mise à jour", content = @Content(schema = @Schema(implementation = LectureCourse.class)))
     @PutMapping("/{id}")
     public ResponseEntity<Exam> updateExam(
-            @PathVariable Long id,
-            @RequestPart("exam") Exam exam,
-            @RequestPart(value = "file", required = false) MultipartFile file) {
+            @Parameter(description = "ID du cours à mettre à jour", required = true) @PathVariable Long id,
+            @Parameter(description = "titre  de l'epreuve  à mettre à jour")@RequestParam(value = "title", required = false) String title,
+            @Parameter(description = "type de l'epreuve ( CONTINUOUS_ASSESSMENT, MAIN_EXAM,RESIT) à mettre à jour")@RequestParam(value = "examType", required = false) ExamType examType,
+            @Parameter(description = "annee  de l'epreuve  à mettre à jour")@RequestParam(value = "year", required = false) int year,
+            @RequestParam(value = "file", required = false) MultipartFile file)  {
         try {
-            Exam updated = examService.updateExam(id, exam, file);
-            return ResponseEntity.ok(updated);
+            Exam updatedExam = examService.updateExam(id,  title,  examType, year, file);
+            return ResponseEntity.ok(updatedExam);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
