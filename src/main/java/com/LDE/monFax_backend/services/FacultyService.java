@@ -32,7 +32,6 @@ public class FacultyService {
         public Optional<Faculty> updateFaculty(Long id, Faculty facultyDetails) {
             return facultyRepository.findById(id).map(faculty -> {
                 faculty.setName(facultyDetails.getName());
-                faculty.setDescription(facultyDetails.getDescription());
                 return facultyRepository.save(faculty);
             });
         }

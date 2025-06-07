@@ -22,9 +22,6 @@ public class Faculty {
     private Long id;
     private String name;
 
-    private String description;// Ajout du champ description
-    //une faculté a plusieurs départements (relation 1-N)
-
     @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Department> departments = new ArrayList<>();
 
