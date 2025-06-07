@@ -53,6 +53,7 @@ public class VideoService {
         video.setPrice(price);
         video.setSubject(subject);
         video.setResourceUrl(fileUrl);
+        video.setSize(file.getSize());
         video.setCreatedAt(LocalDate.now());
         video.setNumberOfDownload(0L);
         video.setNumberOfView(0L);
@@ -93,6 +94,7 @@ public class VideoService {
             // Stocker le nouveau fichier dans un dossier dédié "videos"
             String newFilePath = resourceService.storeFile(file, "videos");
             video.setResourceUrl(newFilePath);
+            video.setSize(file.getSize());
         }
 
         videoRepository.save(video);

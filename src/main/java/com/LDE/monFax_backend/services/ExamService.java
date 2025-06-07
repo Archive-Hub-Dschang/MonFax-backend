@@ -54,6 +54,7 @@ public class ExamService {
         exam.setTitle(title);
         exam.setType(ExamType.valueOf(type.toUpperCase()));
         exam.setYear(year);
+        exam.setSize(file.getSize());
         exam.setSubject(subject);
         exam.setResourceUrl(fileUrl);
         exam.setCreatedAt(LocalDate.now());
@@ -82,6 +83,7 @@ public class ExamService {
         if (title != null)  existingExam.setTitle(title);
         if (examType != null)  existingExam.setType(examType);
         if (year !=0)  existingExam.setYear(year);
+
 
         // Si un nouveau fichier est uploadé, on remplace l'ancien fichier
         if (file != null && !file.isEmpty()) {

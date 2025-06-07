@@ -48,6 +48,7 @@ public class CorrectionService {
         Correction correction = new Correction();
         correction.setTitle(title);
         correction.setPrice(price);
+        correction.setSize(file.getSize());
         correction.setExam(exam);
         correction.setResourceUrl(fileUrl);
         correction.setCreatedAt(LocalDate.now());
@@ -86,7 +87,7 @@ public class CorrectionService {
 
         if (title != null)  existingCorrection.setTitle(title);
         if (price != null) existingCorrection.setPrice(price);
-        
+
         // Si un nouveau fichier est uploadé, on remplace l'ancien fichier
         if (file != null && !file.isEmpty()) {
             // Supprimer ancien fichier
