@@ -1,7 +1,9 @@
 package com.LDE.monFax_backend.services;
 
+import com.LDE.monFax_backend.models.Department;
 import com.LDE.monFax_backend.models.Faculty;
 import com.LDE.monFax_backend.repositories.FacultyRepository;
+import com.LDE.monFax_backend.requests.FacultyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,30 +15,31 @@ public class FacultyService {
 
         private final FacultyRepository facultyRepository;
 
-        // 🔹 Créer une faculté
-        public Faculty createFaculty(Faculty faculty) {
+        public Faculty createFaculty(FacultyRequest request) {
+            Faculty faculty = new Faculty();
+            faculty.setName(request.getName());
             return facultyRepository.save(faculty);
         }
 
-        // 🔹 Lire toutes les facultés
         public List<Faculty> getAllFaculties() {
             return facultyRepository.findAll();
         }
 
-        // 🔹 Lire une faculté par ID
         public Optional<Faculty> getFacultyById(Long id) {
             return facultyRepository.findById(id);
         }
 
-        // 🔹 Mettre à jour une faculté
-        public Optional<Faculty> updateFaculty(Long id, Faculty facultyDetails) {
-            return facultyRepository.findById(id).map(faculty -> {
-                faculty.setName(facultyDetails.getName());
-                return facultyRepository.save(faculty);
-            });
+        public Faculty updateFaculty(Long id, FacultyRequest request) throws Exception {
+            Optional<Faculty> optionalFaculty = facultyRepository.findById(id);
+            if (optionalFaculty.isEmpty()) {
+                throw new Exception("Faculte non trouvée");
+            }
+            Faculty faculty = optionalFaculty.get();
+
+            if (request.getName() != null) faculty.setName(request.getName());
+            return  facultyRepository.save(faculty);
         }
 
-        // 🔹 Supprimer une faculté (avec ses départements grâce à cascade = ALL)
         public boolean deleteFaculty(Long id) {
             return facultyRepository.findById(id).map(faculty -> {
                 facultyRepository.delete(faculty);

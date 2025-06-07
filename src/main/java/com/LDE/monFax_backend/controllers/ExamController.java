@@ -79,7 +79,7 @@ public class ExamController {
 
         try{
             examService.deleteExam(id);
-            return ResponseEntity.ok("creation de l'epreuve effectuée avec success");
+            return ResponseEntity.ok("suppresion de l'epreuve effectuée avec success");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

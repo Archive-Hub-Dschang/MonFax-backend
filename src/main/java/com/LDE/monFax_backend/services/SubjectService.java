@@ -19,10 +19,11 @@ public class SubjectService {
 
     public Subject createSubject(SubjectRequest subjectRequest) {
         Semester Semester = semesterRepository.findById(subjectRequest.getSemesterId())
-                .orElseThrow(() -> new IllegalArgumentException("Aucun Matiere avec l'id : " + subjectRequest.getSemesterId()));
+                .orElseThrow(() -> new IllegalArgumentException("Aucun Semestre avec l'id : " + subjectRequest.getSemesterId()));
         Subject subject = new Subject();
         subject.setSemester(Semester);
         subject.setName(subjectRequest.getName());
+        subject.setPrice(subjectRequest.getPrice());
         return subjectRepository.save(subject);
     }
 
@@ -42,6 +43,7 @@ public class SubjectService {
         Subject subject = optionalSubject.get();
 
         if (request.getName() != null) subject.setName(request.getName());
+        if (request.getPrice() != null) subject.setPrice(request.getPrice());
         if (request.getSemesterId() != null){
             Semester Semester = semesterRepository.findById(request.getSemesterId())
                     .orElseThrow(() -> new IllegalArgumentException("Aucun Matiere avec l'id : " + request.getSemesterId()));
