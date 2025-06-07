@@ -1,4 +1,4 @@
-package com.LDE.monFax_backend.service;
+package com.LDE.monFax_backend.services;
 
 import com.LDE.monFax_backend.exceptions.UserNotFoundException;
 import com.LDE.monFax_backend.models.User;
@@ -6,7 +6,6 @@ import com.LDE.monFax_backend.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {

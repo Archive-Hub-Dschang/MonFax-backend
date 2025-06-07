@@ -1,7 +1,7 @@
 package com.LDE.monFax_backend.controllers;
 
 import com.LDE.monFax_backend.models.User;
-import com.LDE.monFax_backend.service.UserService;
+import com.LDE.monFax_backend.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

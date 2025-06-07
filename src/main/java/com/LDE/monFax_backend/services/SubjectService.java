@@ -1,7 +1,10 @@
 package com.LDE.monFax_backend.services;
 
 import com.LDE.monFax_backend.models.Subject;
+import com.LDE.monFax_backend.models.Semester;
+import com.LDE.monFax_backend.repositories.SemesterRepository;
 import com.LDE.monFax_backend.repositories.SubjectRepository;
+import com.LDE.monFax_backend.requests.SubjectRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +15,14 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SubjectService {
     private final SubjectRepository subjectRepository;
+    private final SemesterRepository semesterRepository;
 
-    public Subject createSubject(Subject subject) {
+    public Subject createSubject(SubjectRequest subjectRequest) {
+        Semester Semester = semesterRepository.findById(subjectRequest.getSemesterId())
+                .orElseThrow(() -> new IllegalArgumentException("Aucun Matiere avec l'id : " + subjectRequest.getSemesterId()));
+        Subject subject = new Subject();
+        subject.setSemester(Semester);
+        subject.setName(subjectRequest.getName());
         return subjectRepository.save(subject);
     }
 
@@ -25,11 +34,21 @@ public class SubjectService {
         return subjectRepository.findById(id);
     }
 
-    public Optional<Subject> updateSubject(Long id, Subject subjectDetails) {
-        return subjectRepository.findById(id).map(subject -> {
-            subject.setName(subjectDetails.getName());
-            return subjectRepository.save(subject);
-        });
+    public void updateSubject(Long id, SubjectRequest request) throws Exception {
+        Optional<Subject> optionalSubject = subjectRepository.findById(id);
+        if (optionalSubject.isEmpty()) {
+            throw new Exception("Matiere non trouvée");
+        }
+        Subject subject = optionalSubject.get();
+
+        if (request.getName() != null) subject.setName(request.getName());
+        if (request.getSemesterId() != null){
+            Semester Semester = semesterRepository.findById(request.getSemesterId())
+                    .orElseThrow(() -> new IllegalArgumentException("Aucun Matiere avec l'id : " + request.getSemesterId()));
+            subject.setSemester(Semester);
+        }
+
+        subjectRepository.save(subject);
     }
 
     public boolean deleteSubject(Long id) {

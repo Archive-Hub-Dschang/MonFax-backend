@@ -1,6 +1,8 @@
 package com.LDE.monFax_backend.controllers;
 
 import com.LDE.monFax_backend.models.Subject;
+import com.LDE.monFax_backend.requests.SubjectRequest;
+import com.LDE.monFax_backend.services.SubjectService;
 import com.LDE.monFax_backend.services.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +18,17 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @PostMapping
-    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) {
-        Subject savedSubject = subjectService.createSubject(subject);
-        return ResponseEntity.ok(savedSubject);
+    public ResponseEntity<?> createSubject(@RequestBody SubjectRequest request) {
+        try {
+            Subject subject = subjectService.createSubject(request);
+            return ResponseEntity.ok(subject);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<Subject>> getAllSubjects() {
+    public ResponseEntity<List<Subject>> getAllSubject() {
         return ResponseEntity.ok(subjectService.getAllSubjects());
     }
 
@@ -34,15 +40,18 @@ public class SubjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Subject> updateSubject(@PathVariable Long id, @RequestBody Subject subjectDetails) {
-        return subjectService.updateSubject(id, subjectDetails)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<String> updateSubject(@PathVariable Long id, @RequestBody SubjectRequest request) {
+        try {
+            subjectService.updateSubject(id, request);
+            return ResponseEntity.ok("Matiere mise à jour avec succès");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erreur lors de la mise à jour : " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
+    public ResponseEntity<String> deleteSubject(@PathVariable Long id) {
         boolean deleted = subjectService.deleteSubject(id);
-        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return deleted ? ResponseEntity.ok().body("success to delete subject") : ResponseEntity.notFound().build();
     }
 }
