@@ -1,6 +1,7 @@
 package com.LDE.monFax_backend.models;
 
 import com.LDE.monFax_backend.enumerations.ExamType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,11 +19,13 @@ public class Exam extends Resource {
 
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
 
     @OneToOne(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private Correction correction;
 
 }

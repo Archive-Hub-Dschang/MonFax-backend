@@ -72,11 +72,13 @@ public class LectureCourseController {
     @PutMapping("/{id}")
     public ResponseEntity<LectureCourse> updateLectureCourse(
             @Parameter(description = "ID du cours à mettre à jour", required = true) @PathVariable Long id,
-            @Parameter(description = "Données du cours") @RequestPart("lectureCourse") LectureCourse lectureCourse,
-            @Parameter(description = "Fichier associé") @RequestPart(value = "file", required = false) MultipartFile file) {
+            @Parameter(description = "titre  du cours à mettre à jour")@RequestParam(value = "title", required = false) String title,
+            @Parameter(description = "description du cours à mettre à jour")@RequestParam(value = "description", required = false) String description,
+            @Parameter(description = "prix du cours à mettre à jour")@RequestParam(value = "price", required = false) Double price,
+            @RequestParam(value = "file", required = false) MultipartFile file)  {
         try {
-            LectureCourse updated = courseService.updateCourse(id, lectureCourse, file);
-            return ResponseEntity.ok(updated);
+            LectureCourse updatedCourse = courseService.updateCourse(id,  title,  description, price, file);
+            return ResponseEntity.ok(updatedCourse);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
@@ -87,15 +89,13 @@ public class LectureCourseController {
     @Operation(summary = "Supprime un cours magistral", description = "Supprime un cours et son fichier associé")
     @ApiResponse(responseCode = "204", description = "Cours supprimé")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLectureCourse(
+    public ResponseEntity<String> deleteLectureCourse(
             @Parameter(description = "ID du cours à supprimer", required = true) @PathVariable Long id) {
         try {
             courseService.deleteCourse(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("supression du support de cours effectué avec success");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

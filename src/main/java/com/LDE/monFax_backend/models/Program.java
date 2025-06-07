@@ -1,5 +1,7 @@
 package com.LDE.monFax_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +21,11 @@ public class Program {
     private String name;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "department_id")
     private Department department;
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Semester> semester = new ArrayList<>();
 }

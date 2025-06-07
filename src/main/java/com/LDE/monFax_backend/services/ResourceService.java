@@ -3,17 +3,14 @@ package com.LDE.monFax_backend.services;
 import com.LDE.monFax_backend.models.Resource;
 import com.LDE.monFax_backend.repositories.ResourceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.UrlResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +20,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ResourceService {
+
+    @Value("${resources.base-dir}")
+    private String baseDir;
     private final ResourceRepository resourceRepository;
 
 
@@ -69,15 +69,13 @@ public class ResourceService {
         return "/uploads/" + folderName + "/" + filename;
     }
 
-    private String getExtension(String filename) {
+    public String getExtension(String filename) {
         int lastDot = filename.lastIndexOf('.');
         if (lastDot == -1) {
             throw new IllegalArgumentException("Fichier sans extension : " + filename);
         }
         return filename.substring(lastDot + 1);
     }
-
-    // Stocker un fichier, retourne le chemin complet stocké
 
 
 
@@ -86,6 +84,17 @@ public class ResourceService {
         if (filePath == null || filePath.isEmpty()) return;
         Path path = Paths.get(filePath);
         Files.deleteIfExists(path);
+    }
+
+    public byte[] downloadResource(Resource resource) throws IOException {
+        if (resource.getResourceUrl() == null || resource.getResourceUrl().isEmpty()) {
+            throw new IOException("Aucun fichier associé à cette ressource.");
+        }
+
+
+
+        Path path = Paths.get(baseDir+resource.getResourceUrl());
+        return Files.readAllBytes(path);
     }
 
     public void increaseNumberOfViews(Resource resource){

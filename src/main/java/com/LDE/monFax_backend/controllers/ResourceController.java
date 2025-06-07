@@ -2,13 +2,14 @@ package com.LDE.monFax_backend.controllers;
 
 
 import com.LDE.monFax_backend.models.Resource;
+import com.LDE.monFax_backend.repositories.ResourceRepository;
 import com.LDE.monFax_backend.services.ResourceService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResourceController {
     private final ResourceService resourceService;
+    private final ResourceRepository resourceRepository;
 
     @GetMapping
     public ResponseEntity<List<Resource>> getAllResources() {
@@ -36,18 +38,37 @@ public class ResourceController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadResourceFile(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("folder") String folder) {
-
+    @GetMapping("/{id}/download")
+    public ResponseEntity<?> downloadResource(@PathVariable Long id) {
         try {
-            String fileUrl = resourceService.storeFile(file, folder);
-            return ResponseEntity.ok(fileUrl);
+            Resource resource = resourceRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Ressource non trouvée en base"));
+
+            System.out.println("Téléchargement ressource: " + resource.getTitle() + ", url=" + resource.getResourceUrl());
+
+            byte[] data = resourceService.downloadResource(resource);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getTitle() + "\"");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(data.length)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(data);
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Erreur lors de l'upload : " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lecture fichier : " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur serveur inattendue : " + e.getMessage());
         }
     }
+
+
+
 }

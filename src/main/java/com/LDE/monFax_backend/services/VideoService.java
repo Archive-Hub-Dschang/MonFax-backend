@@ -6,9 +6,6 @@ import com.LDE.monFax_backend.models.Video;
 import com.LDE.monFax_backend.repositories.SubjectRepository;
 import com.LDE.monFax_backend.repositories.VideoRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,10 +37,14 @@ public class VideoService {
 
     public Video createVideo(String title, String description, Double duration, Double price, Long subjectId, MultipartFile file) throws IOException {
         // On stocke le fichier dans /uploads/videos
+        String filename = (file.getOriginalFilename());
+        String ext = resourceService.getExtension(filename);
+        if (!ext.equals("mp4")) {
+            throw new IOException("vous devez envoyer la video en mp4");
+        }
         String fileUrl = resourceService.storeFile(file, "videos");
 
-        Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new IllegalArgumentException("Matière introuvable avec l'id : " + subjectId));
+        Subject subject = subjectRepository.findById(subjectId).orElseThrow(() -> new IllegalArgumentException("Matière introuvable avec l'id : " + subjectId));
 
         Video video = new Video();
         video.setTitle(title);
@@ -57,6 +58,7 @@ public class VideoService {
         video.setNumberOfView(0L);
 
         return videoRepository.save(video);
+
     }
 
     public void deleteVideo(Long id) {
@@ -81,6 +83,13 @@ public class VideoService {
                 resourceService.deleteFile(video.getResourceUrl());
             }
 
+            String filename=(file.getOriginalFilename());
+            String ext =resourceService.getExtension(filename);
+            if (!ext.equals("mp4")) {
+
+                throw new IOException("vous devez envoyer la video en mp4");
+
+            }
             // Stocker le nouveau fichier dans un dossier dédié "videos"
             String newFilePath = resourceService.storeFile(file, "videos");
             video.setResourceUrl(newFilePath);

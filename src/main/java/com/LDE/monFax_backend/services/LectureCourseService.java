@@ -3,6 +3,7 @@ package com.LDE.monFax_backend.services;
 
 import com.LDE.monFax_backend.models.LectureCourse;
 import com.LDE.monFax_backend.models.Subject;
+import com.LDE.monFax_backend.models.Video;
 import com.LDE.monFax_backend.repositories.LectureCourseRepository;
 import com.LDE.monFax_backend.repositories.SubjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,19 +60,27 @@ public class LectureCourseService {
         lectureCourseRepository.deleteById(id);
     }
 
-    public LectureCourse updateCourse(Long id, LectureCourse lectureCourseDetails, MultipartFile file) throws IOException {
+
+
+
+    public LectureCourse updateCourse(Long id, String title, String description,Double price, MultipartFile file) throws IOException {
         LectureCourse lectureCourse = lectureCourseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("support de Cours  non trouvé"));
 
-        lectureCourse.setTitle(lectureCourseDetails.getTitle());
-        lectureCourse.setDescription(lectureCourseDetails.getDescription());
-        lectureCourse.setPrice(lectureCourseDetails.getPrice());
-        lectureCourse.setSubject(lectureCourseDetails.getSubject());
-
+        if (title != null) lectureCourse.setTitle(title);
+        if (description != null) lectureCourse.setDescription(description);
+        if (price != null)lectureCourse.setPrice(price);
         if (file != null && !file.isEmpty()) {
             resourceService.deleteFile(lectureCourse.getResourceUrl());
 
-            String fileName = resourceService.storeFile(file,"lectureCourse");
+            String originalFilename=(file.getOriginalFilename());
+            String ext =resourceService.getExtension(originalFilename);
+            if (!ext.equals("pdf") && !ext.equals("docx")) {
+
+                throw new IOException("mauvais format de fichier ");
+
+            }
+            String fileName = resourceService.storeFile(file,"Courses");
             lectureCourse.setResourceUrl(fileName);
             lectureCourse.setSize(file.getSize());
         }

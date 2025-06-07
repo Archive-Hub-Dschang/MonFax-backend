@@ -37,6 +37,12 @@ public class ExamService {
 
     public Exam createExam(String title, String type, int year, Long subjectId, MultipartFile file) throws IOException {
         // 1. Upload du fichier
+        String filename = (file.getOriginalFilename());
+        String ext = resourceService.getExtension(filename);
+        if (!ext.equals("pdf") && !ext.equals("docx") ) {
+            throw new IOException("format de fichier invalide ");
+        }
+
         String fileUrl = resourceService.storeFile(file, "exams");
 
         // 2. Récupérer la matière
@@ -57,34 +63,49 @@ public class ExamService {
         return examRepository.save(exam);
     }
 
-    public void deleteExam(Long id) {
-        examRepository.deleteById(id);
-    }
+    public String deleteExam(Long id) {
+        try {
+            if (!examRepository.existsById(id)) {
+                return "Erreur : L'epreuve avec l'id " + id + " n'existe pas.";
+            }
+            examRepository.deleteById(id);
+            return "Suppression de l'epreuve avec l'id " + id + " réussie.";
+        } catch (Exception e) {
+            return "Erreur lors de la suppression de l'epreuve  : " + e.getMessage();
+        }    }
 
-    public Exam updateExam(Long id, Exam updatedExam, MultipartFile newFile) throws IOException {
+    public Exam updateExam (Long id, String title, ExamType examType,int year, MultipartFile file) throws IOException {
         Exam existingExam = examRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Exam not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("epreuve  inexistante avec l'id " + id));
 
         // Mise à jour des champs simples
-        existingExam.setTitle(updatedExam.getTitle());
-        existingExam.setType(updatedExam.getType());
-        existingExam.setYear(updatedExam.getYear());
-        existingExam.setSubject(updatedExam.getSubject());
+        if (title != null)  existingExam.setTitle(title);
+        if (examType != null)  existingExam.setType(examType);
+        if (year !=0)  existingExam.setYear(year);
 
         // Si un nouveau fichier est uploadé, on remplace l'ancien fichier
-        if (newFile != null && !newFile.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             // Supprimer l'ancien fichier physique
             if (existingExam.getResourceUrl() != null) {
                 resourceService.deleteFile(existingExam.getResourceUrl());
             }
 
             // Enregistrer le nouveau fichier et mettre à jour resourceUrl et size
-            String newResourceUrl = resourceService.storeFile(newFile,"exams");
+            String originalFilename = (file.getOriginalFilename());
+            String ext = resourceService.getExtension(originalFilename);
+            if (!ext.equals("pdf") && !ext.equals("docx") ) {
+                throw new IOException("format de fichier invalide ");
+            }
+            String newResourceUrl = resourceService.storeFile(file,"exams");
             existingExam.setResourceUrl(newResourceUrl);
-            existingExam.setSize(newFile.getSize());
+            existingExam.setSize(file.getSize());
         }
 
         return examRepository.save(existingExam);
+    }
+
+    public List<Exam> getExamsBySubjectId(Long subjectId) {
+        return examRepository.findBySubjectId(subjectId);
     }
 
 }
