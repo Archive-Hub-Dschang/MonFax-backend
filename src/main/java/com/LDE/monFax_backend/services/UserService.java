@@ -38,4 +38,8 @@ public class UserService {
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         return userRepository.countUsersRegisteredSince(thirtyDaysAgo);
     }
+
+    public List<User> getLast5ConnectedUsers() {
+        return userRepository.findTop5ByOrderByLastLoginDesc();
+    }
 }

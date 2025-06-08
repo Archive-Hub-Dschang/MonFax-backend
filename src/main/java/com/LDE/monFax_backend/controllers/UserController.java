@@ -44,4 +44,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsersRegisteredLast30Days());
     }
 
+    @GetMapping("/last/five")
+    public List<User> getLast5ConnectedUsers() {
+        return userService.getLast5ConnectedUsers();
+    }
 }

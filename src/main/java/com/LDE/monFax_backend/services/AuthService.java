@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,7 +54,7 @@ public class AuthService {
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Mot de passe incorrect");
         }
-
+        user.setLastLogin(LocalDateTime.now());
         return jwtService.generateToken(user);
     }
 

@@ -30,9 +30,13 @@ public class User {
 
     private LocalDateTime createdAt;
 
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.lastLogin = LocalDateTime.now();
     }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
