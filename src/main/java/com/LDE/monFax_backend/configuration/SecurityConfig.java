@@ -31,7 +31,8 @@ public class SecurityConfig {
                                 "api/auth/register",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html").permitAll()
+                                "/swagger-ui.html",
+                        "/api/payment/ipn").permitAll()
                         .anyRequest().authenticated()
                 ).oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(jwtDecoder())))
                 .build();
