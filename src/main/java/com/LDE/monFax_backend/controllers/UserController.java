@@ -8,14 +8,15 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    private final UserService userService;
+    private final UserService UserService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService UserService) {
+        this.UserService = UserService;
     }
 
     @GetMapping("/users/last5")
     public List<User> getLast5ConnectedUsers() {
-        return userService.getLast5ConnectedUsers();
+        return UserService.getLast5ConnectedUsers();
     }
+    
 }
