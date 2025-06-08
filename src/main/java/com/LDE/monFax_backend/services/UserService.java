@@ -5,6 +5,7 @@ import com.LDE.monFax_backend.models.User;
 import com.LDE.monFax_backend.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,8 +26,16 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // Lister tous les utilisateurs
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public long numberUsers(){
+        return userRepository.count();
+    }
+
+    public long getUsersRegisteredLast30Days() {
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
+        return userRepository.countUsersRegisteredSince(thirtyDaysAgo);
     }
 }

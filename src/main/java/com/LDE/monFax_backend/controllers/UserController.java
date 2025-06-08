@@ -34,4 +34,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> numbersUsers(){
+        return ResponseEntity.ok(userService.numberUsers());
+    }
+
+    @GetMapping("/registrations/last-30-days")
+    public ResponseEntity<Long> getRegistrationsLast30Days() {
+        return ResponseEntity.ok(userService.getUsersRegisteredLast30Days());
+    }
+
 }
