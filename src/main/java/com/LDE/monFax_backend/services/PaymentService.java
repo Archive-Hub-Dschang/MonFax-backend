@@ -146,33 +146,33 @@ public class PaymentService {
         return invoiceUrl;
     }
 
-    public String payWithSoftPay(String phoneNumber, String email, String password, String invoiceToken) {
-        Map<String, Object> body = Map.of(
-                "phone_number", phoneNumber,
-                "customer_email", email,
-                "password", password,
-                "invoice_token", invoiceToken
-        );
-
-        Map<String, Object> response = webClient.post()
-                .uri(softpayUrl)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-
-        if (response == null || !Boolean.TRUE.equals(response.get("success"))) {
-            throw new PaymentException("Échec du paiement : " + response.get("message"));
-        }
-
-        Payment payment = paymentRepository.findByInvoiceToken(invoiceToken)
-                .orElseThrow(() -> new RuntimeException("Paiement introuvable"));
-
-        payment.setStatus(PaymentStatus.COMPLETED);
-        paymentRepository.save(payment);
-
-        return (String) response.get("message");
-    }
+//    public String payWithSoftPay(String phoneNumber, String email, String password, String invoiceToken) {
+//        Map<String, Object> body = Map.of(
+//                "phone_number", phoneNumber,
+//                "customer_email", email,
+//                "password", password,
+//                "invoice_token", invoiceToken
+//        );
+//
+//        Map<String, Object> response = webClient.post()
+//                .uri(softpayUrl)
+//                .bodyValue(body)
+//                .retrieve()
+//                .bodyToMono(Map.class)
+//                .block();
+//
+//        if (response == null || !Boolean.TRUE.equals(response.get("success"))) {
+//            throw new PaymentException("Échec du paiement : " + response.get("message"));
+//        }
+//
+//        Payment payment = paymentRepository.findByInvoiceToken(invoiceToken)
+//                .orElseThrow(() -> new RuntimeException("Paiement introuvable"));
+//
+//        payment.setStatus(PaymentStatus.COMPLETED);
+//        paymentRepository.save(payment);
+//
+//        return (String) response.get("message");
+//    }
 
     public void updatePaymentStatus(String invoiceToken, PaymentStatus newStatus) {
         Payment payment = paymentRepository.findByInvoiceToken(invoiceToken)

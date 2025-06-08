@@ -64,7 +64,7 @@ public class PaymentController {
 
             try {
                 paymentService.updatePaymentStatus(invoiceToken, newStatus);
-                return ResponseEntity.ok("✅ IPN traité avec succès");
+                return ResponseEntity.ok("IPN traité avec succès");
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur : " + e.getMessage());
             }
