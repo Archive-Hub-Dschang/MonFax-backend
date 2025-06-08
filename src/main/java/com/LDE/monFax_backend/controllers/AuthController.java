@@ -32,8 +32,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        String email = authentication.getName();
-        User user = authService.getCurrentUser(email);
+        User user = authService.getCurrentUser();
         return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
                 "username", user.getUsername(),
