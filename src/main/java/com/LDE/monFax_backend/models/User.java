@@ -21,10 +21,7 @@ public class User {
 
     private UserType role;
 
-     @Column(name = "last_login")
+    @Column(name = "last_login")
     private java.time.LocalDateTime lastLogin;
 
-    public java.time.LocalDateTime getLastLogin() { return lastLogin; }
-
-    public void setLastLogin(java.time.LocalDateTime lastLogin) { this.lastLogin = lastLogin; }
 }
